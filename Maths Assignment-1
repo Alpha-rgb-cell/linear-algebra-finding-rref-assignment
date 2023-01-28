@@ -1,0 +1,55 @@
+#Write a program in Python to solve the homogenous system Ax=0 and write the general solution in parametric vector form. Your program should accept as input the size of the matrix, i.e. the number of rows and the number of columns of A, and also the entries of A. The input should ideally be read from a text file. 
+def solve_homogenous(A):
+    # Get the size of the matrix
+    rows = len(A)
+    cols = len(A[0])
+
+    # Perform Gaussian elimination to reduce the matrix to row echelon form
+    for i in range(rows):
+        # Find the pivot element
+        pivot = i
+        for j in range(i+1, rows):
+            if abs(A[j][i]) > abs(A[pivot][i]):
+                pivot = j
+        # Swap rows if necessary
+        if pivot != i:
+            A[i],A[pivot] = A[pivot],A[i]
+
+        # Eliminate elements below the pivot
+        for j in range(i+1, rows):
+            m = A[j][i] / A[i][i]
+            for k in range(i,cols):
+                A[j][k] = A[j][k] - m*A[i][k]
+
+    # Perform back substitution to find the solutions
+    x = [0]*cols
+    rank = rows
+    for i in range(rows-1, -1, -1):
+        if A[i][i] != 0:
+            x[i] = (A[i][cols-1] - sum([A[i][j]*x[j] for j in range(i+1,cols-1)])) / A[i][i]
+            rank -= 1
+        else:
+            x[i] = 0
+
+    # Write the general solution in parametric vector form
+    if rank < cols-1:
+        print("The system has infinitely many solutions in the form of x = x_0 + t*v, where x_0 is a particular solution and v is a vector in the null space of A.")
+        print("A particular solution is:")
+        print(x)
+        print("A basis for the null space of A is:")
+        for i in range(cols):
+            if x[i] == 0:
+                v = [0]*cols
+                v[i] = 1
+                print(v)
+    else:
+        print("The system has no solutions.")
+
+if __name__ == "__main__":
+    # Read the input from a text file
+    with open("input.txt") as file:
+        n, m = map(int, file.readline().split())
+        A = []
+        for i in range(n):
+            A.append(list(map(float, file.readline().split())))
+    solve_homogenous(A)
