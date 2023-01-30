@@ -1,0 +1,54 @@
+def rref(A):
+    n = len(A)
+    m = len(A[0])
+    lead = 0
+    for r in range(n):
+        if lead >= m:
+            return
+        i = r
+        while A[i][lead] == 0:
+            i += 1
+            if i == n:
+                i = r
+                lead += 1
+                if lead == m:
+                    return
+        A[i], A[r] = A[r], A[i]
+        lv = A[r][lead]
+        A[r] = [x / float(lv) for x in A[r]]
+        for i in range(n):
+            if i != r:
+                lv = A[i][lead]
+                A[i] = [x - lv * y for x, y in zip(A[i], A[r])]
+        lead += 1
+
+
+def solve_homogeneous(A):
+    n = len(A)
+    m = len(A[0])
+    rref(A)
+    r = sum([1 for row in A if row[-1] != 0])
+    if r < n:
+        print("The system has infinitely many solutions.")
+        print("A parametric solution is:")
+        pivot_cols = [i for i in range(m) if any([row[i] != 0 for row in A[:r]])]
+        vars = ["x{}".format(i + 1) for i in range(m)]
+        non_pivot_cols = [i for i in range(m) if i not in pivot_cols]
+        free_vars = [vars[i] for i in non_pivot_cols]
+        print("x = c1 * v1 + c2 * v2 + ... + ck * vk")
+        for i, free_var in enumerate(free_vars):
+            print(f"where c{i+1} is a scalar and v{i+1} = {free_var}")
+    else:
+        print("The system has no solution.")
+
+if __name__ == "__main__":
+    A = []
+    size = input("Enter the number of rows and columns of A:")
+    n, m = map(int, size.split())
+    for i in range(n):
+        row = list(map(float, input().split()))
+        A.append(row)
+    print("The rref of the matrix is:")
+    solve_homogeneous(A)
+    for row in A:
+        print(row)
