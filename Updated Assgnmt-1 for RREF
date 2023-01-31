@@ -42,12 +42,13 @@ def solve_homogeneous(A):
         print("The system has no solution.")
 
 if __name__ == "__main__":
-    A = []
-    size = input("Enter the number of rows and columns of A:")
-    n, m = map(int, size.split())
-    for i in range(n):
-        row = list(map(float, input().split()))
-        A.append(row)
+    with open("input.txt", "r") as f:
+        size = f.readline()
+        n, m = map(int, size.split())
+        A = []
+        for i in range(n):
+            row = list(map(float, f.readline().split()))
+            A.append(row)
     print("The rref of the matrix is:")
     solve_homogeneous(A)
     for row in A:
