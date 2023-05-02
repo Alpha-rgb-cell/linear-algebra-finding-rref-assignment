@@ -1,4 +1,4 @@
-#for this you have make a text file in the name of input.txt as given in the line-46
+#for this you have to make a text file in the name of input.txt as given in the line-46
 def rref(A):
     n = len(A)
     m = len(A[0])
